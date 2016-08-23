@@ -39,11 +39,11 @@ var (
 	handle       *pcap.Handle
 )
 
-func OpenLive() {
+func OpenLive() error {
 	// Open device
 	handle, err = pcap.OpenLive(device, snapshot_len, promiscuous, timeout)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer handle.Close()
 
@@ -51,6 +51,7 @@ func OpenLive() {
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	for packet := range packetSource.Packets() {
 		// Process packet here
-		fmt.Println(packet)
+		log.Print("Packet", packet)
 	} //tod
+	return nil
 }
