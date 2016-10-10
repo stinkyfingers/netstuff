@@ -1,6 +1,8 @@
 package device
 
 import (
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/google/gopacket"
@@ -24,4 +26,10 @@ func OpenDevice(name string) (*gopacket.PacketSource, error) {
 	}
 	return gopacket.NewPacketSource(handle, handle.LinkType()), nil
 
+}
+
+func Print(devs []pcap.Interface) {
+	for _, dev := range devs {
+		log.Print(fmt.Sprintf("Device Name: %s; Description: %s; Addresses %s", dev.Name, dev.Description, dev.Addresses))
+	}
 }

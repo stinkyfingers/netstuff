@@ -1,23 +1,30 @@
-package packets
+package layer
 
 import (
+	"testing"
+
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
-	"log"
 )
 
-func Offline(name string) error {
+const (
+	file = "../../../../../../Desktop/tpiscool/tpic2.pcap"
+)
+
+func TestLayer(t *testing.T) {
 	// Open file instead of device
-	handle, err = pcap.OpenOffline(name)
+	handle, err := pcap.OpenOffline(file)
 	if err != nil {
-		return err
+		t.Log(err)
 	}
 	defer handle.Close()
 
 	// Loop through packets in file
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	for packet := range packetSource.Packets() {
-		log.Println(packet.TransportLayer().LayerPayload())
+		err = Layer(packet)
+		if err != nil {
+			t.Error(err)
+		}
 	}
-	return err
 }

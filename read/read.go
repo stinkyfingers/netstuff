@@ -1,23 +1,23 @@
-package packets
+package read
 
 import (
+	"bytes"
+
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
-	"log"
 )
 
-func Offline(name string) error {
-	// Open file instead of device
-	handle, err = pcap.OpenOffline(name)
+func Read(name string) ([]byte, error) {
+	var buffer bytes.Buffer
+	handle, err := pcap.OpenOffline(name)
 	if err != nil {
-		return err
+		return buffer.Bytes(), err
 	}
 	defer handle.Close()
 
-	// Loop through packets in file
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	for packet := range packetSource.Packets() {
-		log.Println(packet.TransportLayer().LayerPayload())
+		buffer.Write(packet.Data())
 	}
-	return err
+	return buffer.Bytes(), err
 }
